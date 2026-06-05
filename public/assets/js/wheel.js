@@ -22,6 +22,7 @@ const categoryIcons = ["🛡️", "⭐", "🚀", "🤝"];
 
 if (canvas && items.length > 0) {
     ctx = canvas.getContext("2d");
+
     document.fonts.ready.then(() => {
         drawWheel();
     });
@@ -138,7 +139,7 @@ function drawCenterCircle(centerRadius) {
     ctx.fill();
 
     ctx.fillStyle = "#d89a35";
-    ctx.font = getFont(42, "bold");
+    ctx.font = getFont(38, "bold");
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("♥", 0, 3);
@@ -156,10 +157,15 @@ function drawOuterText(text, startAngle, endAngle, outerRadius, innerRadius) {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillStyle = "#ffffff";
-    ctx.font = getFont(18, "bold");
 
-    const shortText = shortenText(text, 20);
-    wrapText(ctx, shortText, 0, 0, 112, 24);
+    /*
+        صغرنا الخط هنا حتى لا تتداخل الكلمات.
+        النص الكامل يظهر في Pop-up بعد توقف العجلة.
+    */
+    ctx.font = getFont(14, "bold");
+
+    const shortText = shortenText(text, 15);
+    wrapText(ctx, shortText, 0, 0, 92, 19);
 
     ctx.restore();
 }
@@ -175,34 +181,40 @@ function drawInnerCategoryContent(text, icon, startAngle, endAngle, innerRadius,
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    // Icon circle
     ctx.beginPath();
-    ctx.arc(0, -34, 25, 0, Math.PI * 2);
+    ctx.arc(0, -31, 22, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(255,255,255,0.22)";
     ctx.fill();
 
     ctx.beginPath();
-    ctx.arc(0, -34, 25, 0, Math.PI * 2);
+    ctx.arc(0, -31, 22, 0, Math.PI * 2);
     ctx.lineWidth = 2;
     ctx.strokeStyle = "rgba(255,255,255,0.55)";
     ctx.stroke();
 
-    // Icon
-    ctx.font = "26px Arial, sans-serif";
+    ctx.font = "23px Arial, sans-serif";
     ctx.fillStyle = "#ffffff";
-    ctx.fillText(icon, 0, -33);
+    ctx.fillText(icon, 0, -30);
 
-    // Title
+    /*
+        صغرنا خط الأقسام الأساسية أيضًا.
+    */
     ctx.fillStyle = "#ffffff";
-    ctx.font = getFont(21, "bold");
-    wrapText(ctx, text, 0, 22, 145, 28);
+    ctx.font = getFont(18, "bold");
+    wrapText(ctx, text, 0, 22, 128, 24);
 
     ctx.restore();
 }
 
 function shortenText(text, maxLength) {
-    if (!text) return "";
-    if (text.length <= maxLength) return text;
+    if (!text) {
+        return "";
+    }
+
+    if (text.length <= maxLength) {
+        return text;
+    }
+
     return text.substring(0, maxLength) + "...";
 }
 
