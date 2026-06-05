@@ -19,7 +19,7 @@ class WheelController extends Controller
             ->map(function ($category) use ($lang) {
                 return [
                     'id' => $category->id,
-                    'title' => $lang === 'ar' ? $category->title_ar : $category->title_he,
+                    'title' => $lang === 'he' ? $category->title_he : $category->title_ar,
                     'color' => $category->color,
                 ];
             });
@@ -35,10 +35,10 @@ class WheelController extends Controller
             ->map(function ($item) use ($lang) {
                 return [
                     'id' => $item->id,
-                    'title' => $lang === 'ar' ? $item->title_ar : $item->title_he,
-                    'description' => $lang === 'ar' ? $item->description_ar : $item->description_he,
-                    'question' => $lang === 'ar' ? $item->question_ar : $item->question_he,
-                    'category' => $lang === 'ar' ? $item->category->title_ar : $item->category->title_he,
+                    'title' => $lang === 'he' ? $item->title_he : $item->title_ar,
+                    'description' => $lang === 'he' ? $item->description_he : $item->description_ar,
+                    'question' => $lang === 'he' ? $item->question_he : $item->question_ar,
+                    'category' => $lang === 'he' ? $item->category->title_he : $item->category->title_ar,
                     'category_id' => $item->category_id,
                     'color' => $item->category->color,
                 ];

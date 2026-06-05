@@ -33,6 +33,12 @@ function getFont(size, weight = "bold") {
     return `${weight} ${size}px ${fontName}, Arial, sans-serif`;
 }
 
+function prepareTextDirection() {
+    ctx.direction = currentLang === "he" ? "rtl" : "rtl";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+}
+
 function drawWheel(rotation = 0) {
     const size = canvas.width;
     const center = size / 2;
@@ -140,8 +146,7 @@ function drawCenterCircle(centerRadius) {
 
     ctx.fillStyle = "#d89a35";
     ctx.font = getFont(38, "bold");
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+    prepareTextDirection();
     ctx.fillText("♥", 0, 3);
 }
 
@@ -150,21 +155,22 @@ function drawOuterText(text, startAngle, endAngle, outerRadius, innerRadius) {
     const textRadius = (outerRadius + innerRadius) / 2;
 
     ctx.save();
+
     ctx.rotate(angle);
     ctx.translate(textRadius, 0);
-    ctx.rotate(Math.PI / 2);
-
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "#ffffff";
 
     /*
-        صغرنا الخط هنا حتى لا تتداخل الكلمات.
-        النص الكامل يظهر في Pop-up بعد توقف العجلة.
+        تدوير النص الخارجي ليكون داخل الخانة.
+        في العبرية والعربية نحافظ على نفس اتجاه العرض داخل الخانة،
+        والنص نفسه يأتي من السيرفر حسب اللغة.
     */
-    ctx.font = getFont(14, "bold");
+    ctx.rotate(Math.PI / 2);
 
-    const shortText = shortenText(text, 15);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = getFont(14, "bold");
+    prepareTextDirection();
+
+    const shortText = shortenText(text, currentLang === "he" ? 16 : 15);
     wrapText(ctx, shortText, 0, 0, 92, 19);
 
     ctx.restore();
@@ -175,6 +181,7 @@ function drawInnerCategoryContent(text, icon, startAngle, endAngle, innerRadius,
     const textRadius = (innerRadius + centerRadius) / 2;
 
     ctx.save();
+
     ctx.rotate(angle);
     ctx.translate(textRadius, 0);
 
@@ -196,11 +203,10 @@ function drawInnerCategoryContent(text, icon, startAngle, endAngle, innerRadius,
     ctx.fillStyle = "#ffffff";
     ctx.fillText(icon, 0, -30);
 
-    /*
-        صغرنا خط الأقسام الأساسية أيضًا.
-    */
     ctx.fillStyle = "#ffffff";
     ctx.font = getFont(18, "bold");
+    prepareTextDirection();
+
     wrapText(ctx, text, 0, 22, 128, 24);
 
     ctx.restore();
@@ -235,7 +241,9 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
         }
     });
 
-    lines.push(line.trim());
+    if (line.trim() !== "") {
+        lines.push(line.trim());
+    }
 
     const startY = y - ((lines.length - 1) * lineHeight) / 2;
 
